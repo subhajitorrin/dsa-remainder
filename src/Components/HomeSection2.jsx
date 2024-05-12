@@ -6,7 +6,7 @@ function HomeSection2() {
     <div className=" h-screen pl-20 pr-20 flex items-center">
       <div className="sectionbody flex flex-col gap-5">
         <h4 className="text-[20px] font-bold">Stay Sharp</h4>
-        <h1 class="text-[50px] font-bold leading-tight">
+        <h1 className="text-[50px] font-bold leading-tight">
           Never Miss a Daily DSA <br />
           Question <br />
         </h1>

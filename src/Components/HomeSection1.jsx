@@ -5,7 +5,7 @@ function HomeSection1() {
     <div className=" h-screen pl-20 pr-20  homesection1 ">
       <div className="flex items-center" style={{ height: "calc(100% - 70px)" }}>
         <div className="sectionbody flex flex-col gap-5">
-          <h1 class="text-[50px] font-bold leading-tight">
+          <h1 className="text-[50px] font-bold leading-tight">
             Get Daily DSA <br />
             Question Remainders <br />
             and Ace Your Coding <br />

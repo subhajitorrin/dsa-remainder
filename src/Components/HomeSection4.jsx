@@ -8,7 +8,7 @@ function HomeSection4() {
         style={{ height: "calc(100% - 70px)" }}
       >
         <div className="sectionbody flex flex-col gap-5">
-          <h1 class="text-[50px] font-bold leading-tight">
+          <h1 className="text-[50px] font-bold leading-tight">
             Improve Your Problem-Solving
             <br />
             Skills
