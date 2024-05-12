@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { ScrollContext } from "../context/ScrollContext";
 
 function HomeSection2() {
+  const {handelScroll} = useContext(ScrollContext)
   return (
     <div className=" h-screen pl-40 pr-40 flex items-center ">
       <div className="sectionbody flex flex-col gap-5 w-[50%]">
@@ -19,7 +21,7 @@ function HomeSection2() {
           <button className="pl-5 pr-5 pt-2 pb-2 bg-tranparent text-black border-black border">
             Learn More
           </button>
-          <button className="pl-5 pr-5 pt-2 pb-2 bg-tranparent text-black flex items-center gap-1">
+          <button className="pl-5 pr-5 pt-2 pb-2 bg-tranparent text-black flex items-center gap-1" onClick={handelScroll}>
             Sign Up <MdKeyboardArrowRight className="text-[20px]" />
           </button>
         </div>

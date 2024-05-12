@@ -1,18 +1,27 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useState,useRef,useEffect } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { FaChevronLeft } from "react-icons/fa6";
 import "./RegLog.css";
+import { ScrollContext } from "../context/ScrollContext";
 
 function RegLog({ logrefsection }) {
   const [toggle, setToggle] = useState(false);
+  const scrollRefx = useRef(null);
+  const { setScrollRef } = useContext(ScrollContext);
+
   function handleToggle() {
     setToggle((prev) => !prev);
   }
 
+  useEffect(() => {
+    setScrollRef(scrollRefx)
+  }, [])
+  
+
   return (
     <div
       className="h-screen pl-20 pr-20  flex flex-col items-center justify-center"
-      ref={logrefsection}
+      ref={scrollRefx}
     >
       <div className={`container ${toggle ? "active" : ""}`} id="container">
         <div className="form-container sign-up">

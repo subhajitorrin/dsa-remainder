@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { ScrollContext } from "../context/ScrollContext";
 
 function Navbar() {
+  const { handelScroll } = useContext(ScrollContext);
   return (
     <div className="navbar fixed h-[70px]  pl-40 pr-40 w-screen flex items-center justify-between bg-white">
       <div className="flex gap-7 font-semibold">
@@ -13,7 +15,7 @@ function Navbar() {
         </h4>
       </div>
       <div className="">
-        <button className="pl-5 pr-5 pt-2 pb-2 bg-black text-white">
+        <button className="pl-5 pr-5 pt-2 pb-2 bg-black text-white" onClick={handelScroll}>
           Sign Up
         </button>
       </div>

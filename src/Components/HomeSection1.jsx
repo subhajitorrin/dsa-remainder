@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ScrollContext } from "../context/ScrollContext";
 
 function HomeSection1() {
+  const {handelScroll}= useContext(ScrollContext);
   return (
     <div className=" h-screen pl-40 pr-40  homesection1 flex">
       <div
@@ -22,7 +24,7 @@ function HomeSection1() {
             chances of acting your next coding interview.
           </p>
           <div className="flex gap-5">
-            <button className="pl-5 pr-5 pt-2 pb-2 bg-black text-white">
+            <button className="pl-5 pr-5 pt-2 pb-2 bg-black text-white" onClick={handelScroll}>
               Register
             </button>
             <button className="pl-5 pr-5 pt-2 pb-2 bg-tranparent text-black border-black border">
