@@ -2,7 +2,7 @@ import React from "react";
 
 function HomeSection3() {
   return (
-    <div className="h-screen pl-20 pr-20 flex">
+    <div className="h-screen pl-40 pr-40 flex">
       <div className=" w-[50%] flex items-center justify-center">
         <div className="img5 h-[700px] w-[700px]"></div>
       </div>

@@ -2,8 +2,8 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="text-black py-10 mt-32">
-      <div className="pl-20 pr-20 mx-auto flex flex-wrap justify-between items-start">
+    <div className="text-black py-10 mt-40 mb-10">
+      <div className="pl-40 pr-40 mx-auto flex flex-wrap justify-between items-start">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Logo</h1>
           <p className="text-black">

@@ -2,7 +2,7 @@ import React from "react";
 
 function HomeSection5() {
   return (
-    <div className=" h-screen pl-20 pr-20  homesection1 flex">
+    <div className=" h-screen pl-40 pr-40  homesection1 flex">
       <div className="h-full w-[50%]">
         <div className="mb-[50px]">
           <h1 className="text-[50px] font-bold">FAQs</h1>

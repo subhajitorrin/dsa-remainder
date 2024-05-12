@@ -2,7 +2,7 @@ import React from "react";
 
 function HomeSection1() {
   return (
-    <div className=" h-screen pl-20 pr-20  homesection1 flex">
+    <div className=" h-screen pl-40 pr-40  homesection1 flex">
       <div
         className="flex items-center w-[50%]"
         style={{ height: "calc(100% - 70px)" }}

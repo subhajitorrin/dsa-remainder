@@ -3,7 +3,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 
 function HomeSection2() {
   return (
-    <div className=" h-screen pl-20 pr-20 flex items-center ">
+    <div className=" h-screen pl-40 pr-40 flex items-center ">
       <div className="sectionbody flex flex-col gap-5 w-[50%]">
         <h4 className="text-[20px] font-bold">Stay Sharp</h4>
         <h1 className="text-[50px] font-bold leading-tight">
