@@ -2,8 +2,11 @@ import React from "react";
 
 function HomeSection1() {
   return (
-    <div className=" h-screen pl-20 pr-20  homesection1 ">
-      <div className="flex items-center" style={{ height: "calc(100% - 70px)" }}>
+    <div className=" h-screen pl-20 pr-20  homesection1 flex">
+      <div
+        className="flex items-center w-[50%]"
+        style={{ height: "calc(100% - 70px)" }}
+      >
         <div className="sectionbody flex flex-col gap-5">
           <h1 className="text-[50px] font-bold leading-tight">
             Get Daily DSA <br />
@@ -27,6 +30,9 @@ function HomeSection1() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="h-full w-[50%] flex justify-center items-center">
+        <div className="img1 h-[700px] w-[700px]"></div>
       </div>
     </div>
   );
