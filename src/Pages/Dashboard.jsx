@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
+import QusCard from "../Components/QusCard";
+import { BsCardText } from "react-icons/bs";
+import { VscListSelection } from "react-icons/vsc";
+import QusList from "../Components/QusList";
 
 const dsaCategories = [
+  "All",
   "Array",
   "LinkedList",
   "Stack",
@@ -18,16 +23,28 @@ const dsaCategories = [
 const difficulties = ["Easy", "Medium", "Hard"];
 
 function Dashboard() {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState(["All"]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
+  const [cardListToggle, setCardListToggle] = useState(true);
 
   const toggleCategory = (category) => {
-    if (selectedCategories.includes(category)) {
+    if (category === "All") {
+      setSelectedCategories(["All"]); // Select only "All"
+    } else if (selectedCategories.includes("All")) {
+      // If "All" is selected, deselect it and select the clicked category
+      setSelectedCategories([category]);
+    } else if (selectedCategories.includes(category)) {
+      // If the category is already selected, deselect it
       setSelectedCategories(selectedCategories.filter((c) => c !== category));
     } else {
+      // If the category is not selected, select it
       setSelectedCategories([...selectedCategories, category]);
     }
   };
+
+  useEffect(() => {
+    console.log(cardListToggle);
+  }, [cardListToggle]);
 
   return (
     <div className="h-screen flex">
@@ -90,9 +107,38 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="w-[70%] bg-gray-200">
-        <div className="h-[30%] bg-red-600"></div>
-        <div className="h-[70%] bg-green-600"></div>
+      <div className="w-[70%] bg-gray-200 ">
+        <div className="h-[10%] bg-red-600 flex items-center px-6 justify-between">
+          <h1 className="text-[40px] font-bold">Dashboard</h1>
+          <div className="relative cardListContainer">
+            <div className="w-[170px] h-[40px] bg-white rounded-[30px] flex select-none listcardcontainer">
+              <div
+                className={`transition-all duration-700 flex font-[400] gap-2 items-center w-[50%] justify-center relative z-10 rounded-[30px] cursor-pointer bg-transparent ${
+                  cardListToggle ? "text-white font-500" : "text-black"
+                }`}
+                onClick={() => setCardListToggle(true)}
+              >
+                <BsCardText /> <p>Card</p>
+              </div>
+              <div
+                className={`transition-all duration-700 flex gap-2 font-[400] items-center w-[50%] justify-center relative z-10 rounded-[30px] cursor-pointer bg-transparent ${
+                  !cardListToggle ? "text-white font-500" : "text-black"
+                }`}
+                onClick={() => setCardListToggle(false)}
+              >
+                <VscListSelection /> <p>List</p>
+              </div>
+              <div
+                className={`transition-all duration-300 ease-in-out w-[50%] h-full bg-black absolute z-1 rounded-[30px] top-0 ${
+                  cardListToggle ? "left-0" : "left-[85px]"
+                }`}
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div className="h-[90%] bg-gray-700 p-6 ">
+          <QusList/>
+        </div>
       </div>
     </div>
   );
