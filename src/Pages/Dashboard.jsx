@@ -3,6 +3,8 @@ import { IoMenu } from "react-icons/io5";
 import QusList from "../Components/QusList";
 import { IoMdSearch } from "react-icons/io";
 import UpdateProfile from "../Components/UpdateProfile";
+import { Pie,Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 
 const dsaCategories = [
   "All",
@@ -21,11 +23,30 @@ const dsaCategories = [
 
 const difficulties = ["Easy", "Medium", "Hard"];
 
+const fakeChart = {
+  labels: ["Array", "LinkedList", "Stack", "Queue", "Tree"],
+  datasets: [
+    {
+      data: [200, 100, 300, 100, 100],
+      backgroundColor: [
+        "rgba(255,99,132,0.9)",
+        "rgba(23, 212, 127, 0.9)",
+        "rgba(161, 65, 190, 0.9)",
+        "rgba(194, 140, 52, 0.9)",
+        "rgba(54,162,235,0.9)",
+      ],
+      hoverOffset: 4,
+    },
+  ],
+};
+
+ChartJS.register(Tooltip, Legend, ArcElement);
+
 function Dashboard() {
   const [selectedCategories, setSelectedCategories] = useState(["All"]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
   const [cardListToggle, setCardListToggle] = useState(true);
-  const [toggleMenu, setToggleMenu] = useState(true);
+  const [toggleMenu, setToggleMenu] = useState(false);
 
   const toggleCategory = (category) => {
     if (category === "All") {
@@ -61,8 +82,13 @@ function Dashboard() {
             {toggleMenu ? <UpdateProfile /> : ""}
           </div>
         </div>
-        <div className="mx-6 border border-gray-700 h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">
-          Chart
+        <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">
+          <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">Total<br />60</p>
+          <Doughnut
+            options={{}}
+            data={fakeChart}
+            className="h-[100px] w-full"
+          />
         </div>
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-2">
