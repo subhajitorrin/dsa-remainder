@@ -5,9 +5,11 @@ import { GiConfirmed } from "react-icons/gi";
 function QusCard() {
   return (
     <div className=" mb-5 w-full h-[60px] rounded-[10px] flex items-center justify-between px-5 bg-opacity-6 shadow-lg backdrop-filter backdrop-blur-sm border border-black border-opacity-20 transition-all duration-100 ease-linear hover:shadow-2xl">
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-center w-[600px]">
         <GiConfirmed className="text-green-500 text-[25px]" />
-        <h1 className="text-[20px] font-[500] ">Container With Most Water</h1>
+        <h1 className="text-[20px] font-[500] ">
+        Letter Combinations of a Phone Number
+        </h1>
         <FaExternalLinkAlt className="cursor-pointer" />
       </div>
       <div className="">

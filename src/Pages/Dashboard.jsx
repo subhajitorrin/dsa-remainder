@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import QusList from "../Components/QusList";
 import { IoMdSearch } from "react-icons/io";
+import UpdateProfile from "../Components/UpdateProfile";
 
 const dsaCategories = [
   "All",
@@ -24,6 +25,7 @@ function Dashboard() {
   const [selectedCategories, setSelectedCategories] = useState(["All"]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
   const [cardListToggle, setCardListToggle] = useState(true);
+  const [toggleMenu, setToggleMenu] = useState(true);
 
   const toggleCategory = (category) => {
     if (category === "All") {
@@ -45,11 +47,19 @@ function Dashboard() {
   }, [cardListToggle]);
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex select-none">
       <div className="flex flex-col w-[30%] bg-white text-black">
         <div className="flex justify-between items-center px-6 h-[70px] ">
-          <h1 className="text-2xl font-bold spacemono">Subhajit Ghosh</h1>
-          <IoMenu className="text-xl cursor-pointer" />
+          <h1 className="text-2xl font-bold spacemono border-b">
+            Subhajit Ghosh
+          </h1>
+          <div className="relative">
+            <IoMenu
+              className="text-xl cursor-pointer"
+              onClick={() => setToggleMenu((prev) => !prev)}
+            />
+            {toggleMenu ? <UpdateProfile /> : ""}
+          </div>
         </div>
         <div className="mx-6 border border-gray-700 h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">
           Chart
@@ -103,11 +113,21 @@ function Dashboard() {
         <div className="h-[10%] bg-transparent flex items-center px-6 justify-between border-b">
           <h1 className="text-[40px] font-bold spacemono">Dashboard</h1>
           <div className="flex items-center border border-black border-opacity-20 p-2 rounded-2xl px-5 ">
-            <input type="text" placeholder="Search for question..." className="outline-none pr-2 w-[300px]"/>
-            <IoMdSearch className="text-[20px]"/>
+            <input
+              type="text"
+              placeholder="Search for question..."
+              className="outline-none pr-2 w-[300px]"
+            />
+            <IoMdSearch className="text-[20px]" />
           </div>
         </div>
-        <div className="h-[90%] bg-transparent p-6 ">
+        <div className="h-[88%] bg-transparent p-6 pt-0">
+          <div className="h-[30px] w-full flex justify-between items-center py-5 font-[500] text-gray-500">
+            <p className="w-[600px] text-center ">Question</p>
+            <p className="relative left-1">Category</p>
+            <p className="relative right-7">Difficulty</p>
+            <p className="relative right-8">Sended at</p>
+          </div>
           <QusList />
         </div>
       </div>
