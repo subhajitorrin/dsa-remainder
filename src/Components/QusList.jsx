@@ -1,40 +1,15 @@
-import React from 'react'
-import QusCard from './QusCard'
+import React, { useState } from "react";
+import QusCard from "./QusCard";
 
 function QusList() {
+  const [list, setlist] = useState([1, 2, 3, 4, 5, 6,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,,1]);
   return (
-    <div className="h-full grid grid-cols-1 gap-5 overflow-x-auto quslistcontainer">
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
-        <QusCard />
+    <div className="h-full  overflow-x-auto quslistcontainer ">
+      {list.map((item, index) => {
+        return <QusCard />;
+      })}
     </div>
-  )
+  );
 }
 
-export default QusList
+export default QusList;
