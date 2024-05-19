@@ -6,6 +6,7 @@ function UpdateProfile({ settriggerUserEffect }) {
   function handelSignout() {
     localStorage.removeItem("email");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("uid");
     settriggerUserEffect((prev) => !prev);
   }
   return (

@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  isValidElement,
-} from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { FaChevronLeft } from "react-icons/fa6";
 import "./RegLog.css";
@@ -14,11 +8,11 @@ import { db, auth, provider } from "../firebase/firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  onAuthStateChanged,
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { FaGoogle } from "react-icons/fa";
 
 function RegLog({ logrefsection, settriggerUserEffect }) {
   const [toggle, setToggle] = useState(false);
@@ -87,11 +81,27 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       if (user.emailVerified) {
         localStorage.setItem("email", data.email);
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("uid", user.uid);
         settriggerUserEffect((prev) => !prev);
         console.log("Login succesfull");
       } else {
         console.log("Email is not verified");
       }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handelSignInWithGoodle() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log(user);
+      localStorage.setItem("email", user.email);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("uid", user.uid);
+      settriggerUserEffect((prev) => !prev);
+      console.log("Login succesfull");
     } catch (err) {
       console.log(err);
     }
@@ -106,11 +116,14 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         <div className="form-container sign-up">
           <form onSubmit={handleRegister}>
             <h1>Create Account</h1>
-            <div className="social-icons">
-              <i className="fab fa-google-plus-g  iconx"></i>
-              <i className="fab fa-facebook-f iconx"></i>
-              <i className="fab fa-github iconx"></i>
-              <i className="fab fa-linkedin-in iconx"></i>
+            <div className="">
+              <div
+                className="flex items-center gap-2 border border-black h-[40px] m-[10px] p-5 rounded-[10px] cursor-pointer"
+                onClick={handelSignInWithGoodle}
+              >
+                <FaGoogle />
+                <p className="font-[500]">Sign in with Google</p>
+              </div>
             </div>
             <span>or use your email for registration</span>
             <input type="text" placeholder="Name" />
@@ -122,11 +135,14 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         <div className="form-container sign-in">
           <form onSubmit={handelLogin}>
             <h1>Sign In</h1>
-            <div className="social-icons">
-              <i className="fab fa-google-plus-g iconx"></i>
-              <i className="fab fa-facebook-f iconx"></i>
-              <i className="fab fa-github iconx"></i>
-              <i className="fab fa-linkedin-in iconx"></i>
+            <div className="">
+              <div
+                className="flex items-center gap-2 border border-black h-[40px] m-[10px] p-5 rounded-[10px] cursor-pointer"
+                onClick={handelSignInWithGoodle}
+              >
+                <FaGoogle />
+                <p className="font-[500]">Sign in with Google</p>
+              </div>
             </div>
             <span>or use your email password</span>
             <input type="email" placeholder="Email" />
