@@ -6,7 +6,7 @@ function QusList() {
   return (
     <div className="h-full  overflow-x-auto quslistcontainer ">
       {list.map((item, index) => {
-        return <QusCard />;
+        return <QusCard key={index}/>;
       })}
     </div>
   );

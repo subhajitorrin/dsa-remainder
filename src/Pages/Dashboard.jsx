@@ -42,7 +42,7 @@ const fakeChart = {
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
-function Dashboard() {
+function Dashboard({settriggerUserEffect}) {
   const [selectedCategories, setSelectedCategories] = useState(["All"]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
   const [cardListToggle, setCardListToggle] = useState(true);
@@ -79,7 +79,7 @@ function Dashboard() {
               className="text-xl cursor-pointer"
               onClick={() => setToggleMenu((prev) => !prev)}
             />
-            {toggleMenu ? <UpdateProfile /> : ""}
+            {toggleMenu ? <UpdateProfile settriggerUserEffect={settriggerUserEffect}/> : ""}
           </div>
         </div>
         <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">

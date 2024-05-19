@@ -8,17 +8,14 @@ import HomeSection5 from "../Components/HomeSection5";
 import Footer from "../Components/Footer";
 import RegLog from "../Components/RegLog";
 
-function Home() {
+function Home({settriggerUserEffect}) {
   const logrefsection = useRef(null);
-  function handelGotoLogReg() {
-    logrefsection.current?.scrollIntoView({ behavior: "smooth" });
-  }
   return (
     <div className="">
       <Navbar />
       <HomeSection1 />
       <HomeSection2 />
-      <RegLog logrefsection={logrefsection} />
+      <RegLog logrefsection={logrefsection} settriggerUserEffect={settriggerUserEffect}/>
       <HomeSection3 />
       <HomeSection4 />
       <HomeSection5 />
