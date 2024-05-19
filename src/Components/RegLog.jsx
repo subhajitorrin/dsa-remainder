@@ -13,6 +13,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { FaGoogle } from "react-icons/fa";
+import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
 
 function RegLog({ logrefsection, settriggerUserEffect }) {
   const [toggle, setToggle] = useState(false);
@@ -96,10 +97,19 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log(user);
       localStorage.setItem("email", user.email);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("uid", user.uid);
+      const userDetail =await getUserDetailsWithId(user.uid);
+      if (!userDetail) {
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName,
+          email: user.email,
+          id: user.uid,
+          createdAt: new Date(),
+          isSubscribed: true,
+        });
+      }
       settriggerUserEffect((prev) => !prev);
       console.log("Login succesfull");
     } catch (err) {

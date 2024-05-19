@@ -3,8 +3,9 @@ import { IoMenu } from "react-icons/io5";
 import QusList from "../Components/QusList";
 import { IoMdSearch } from "react-icons/io";
 import UpdateProfile from "../Components/UpdateProfile";
-import { Pie,Doughnut } from "react-chartjs-2";
+import { Pie, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
+import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
 
 const dsaCategories = [
   "All",
@@ -42,11 +43,12 @@ const fakeChart = {
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
-function Dashboard({settriggerUserEffect}) {
+function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [selectedCategories, setSelectedCategories] = useState(["All"]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
   const [cardListToggle, setCardListToggle] = useState(true);
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [user, setUser] = useState("");
 
   const toggleCategory = (category) => {
     if (category === "All") {
@@ -63,27 +65,50 @@ function Dashboard({settriggerUserEffect}) {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(cardListToggle);
+  // }, [cardListToggle]);
+
   useEffect(() => {
-    console.log(cardListToggle);
-  }, [cardListToggle]);
+    async function setUserAfterLogin() {
+      if (isLoggedIn) {
+        const useruid = localStorage.getItem("uid");
+        const userData = await getUserDetailsWithId(useruid);
+        setUser(userData);
+      }
+    }
+    setUserAfterLogin();
+  }, [settriggerUserEffect]);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <div className="h-screen flex select-none">
       <div className="flex flex-col w-[30%] bg-white text-black">
         <div className="flex justify-between items-center px-6 h-[70px] ">
           <h1 className="text-2xl font-bold spacemono border-b">
-            Subhajit Ghosh
+            {user && user.name}
           </h1>
           <div className="relative">
             <IoMenu
               className="text-xl cursor-pointer"
               onClick={() => setToggleMenu((prev) => !prev)}
             />
-            {toggleMenu ? <UpdateProfile settriggerUserEffect={settriggerUserEffect}/> : ""}
+            {toggleMenu ? (
+              <UpdateProfile settriggerUserEffect={settriggerUserEffect} />
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">
-          <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">Total<br />60</p>
+          <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">
+            Total
+            <br />
+            60
+          </p>
           <Doughnut
             options={{}}
             data={fakeChart}

@@ -20,7 +20,7 @@ function App() {
   return (
     <>
       {isLoggedIn ? (
-        <Dashboard settriggerUserEffect={settriggerUserEffect} />
+        <Dashboard settriggerUserEffect={settriggerUserEffect} isLoggedIn={isLoggedIn}/>
       ) : (
         <Home settriggerUserEffect={settriggerUserEffect} />
       )}
