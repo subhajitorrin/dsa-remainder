@@ -8,7 +8,7 @@ import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { BarLoader, BeatLoader } from "react-spinners";
+import { BarLoader, BeatLoader, RingLoader, ScaleLoader } from "react-spinners";
 import Loading from "./Loading";
 
 const dsaCategories = [
@@ -57,6 +57,8 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [isLoading, setisLoading] = useState(true);
   const [disableCategories, setdisableCategories] = useState(false);
   const [disableDifficulties, setdisableDifficulties] = useState(false);
+  const [toggleSubscribe, settoggleSubscribe] = useState(null);
+  const [disableSubscribe, setDisableSubscribe] = useState(false);
 
   const toggleCategory = (category) => {
     setdisableCategories(true);
@@ -128,8 +130,29 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
       setdisableCategories(false);
       setSelectedDifficulty(user.difficulty);
       setdisableDifficulties(false);
+      settoggleSubscribe(user.isSubscribed);
+      setDisableSubscribe(false);
     }
   }, [user]);
+
+  async function handelSubscribe() {
+    setDisableSubscribe(true);
+    const userRef = doc(db, "users", user.id);
+    try {
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const currentUserData = userDoc.data();
+        const updatedUserData = {
+          ...currentUserData,
+          isSubscribed: !currentUserData.isSubscribed,
+        };
+        await updateDoc(userRef, updatedUserData);
+        settriggerUserDataFetch((prev) => !prev);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -139,9 +162,28 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
     <div className="h-screen flex select-none">
       <div className="flex flex-col w-[30%] bg-white text-black">
         <div className="flex justify-between items-center px-6 h-[70px] ">
-          <h1 className="text-2xl font-bold spacemono border-b">
-            {user && user.name}
-          </h1>
+          <div className="flex gap-3 items-center">
+            <h1 className="text-2xl font-bold spacemono border-b">
+              {user && user.name}
+            </h1>
+            <button
+              className={`w-[150px] ${
+                toggleSubscribe
+                  ? "bg-black text-white border border-transparent"
+                  : "border border-black "
+              } rounded-md px-4 py-1 } ${
+                disableSubscribe ? "pointer-events-none" : ""
+              }`}
+              onClick={handelSubscribe}
+            >
+              {toggleSubscribe ? "Unsubscribe" : "Subscribe"}
+            </button>
+            {disableSubscribe ? (
+              <ScaleLoader color="#949b99" height={10} width={4} />
+            ) : (
+              ""
+            )}
+          </div>
           <div className="relative">
             <IoMenu
               className="text-xl cursor-pointer"
