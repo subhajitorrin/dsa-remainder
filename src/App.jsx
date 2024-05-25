@@ -3,6 +3,7 @@ import "./App.css";
 import Home from "./Pages/Home";
 import Dashboard from "./Pages/Dashboard";
 import { auth } from "./firebase/firebase";
+import Loading from "./Pages/Loading";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +21,10 @@ function App() {
   return (
     <>
       {isLoggedIn ? (
-        <Dashboard settriggerUserEffect={settriggerUserEffect} isLoggedIn={isLoggedIn}/>
+        <Dashboard
+          settriggerUserEffect={settriggerUserEffect}
+          isLoggedIn={isLoggedIn}
+        />
       ) : (
         <Home settriggerUserEffect={settriggerUserEffect} />
       )}
