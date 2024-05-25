@@ -48,26 +48,10 @@ Hi {recipientName},\nJust a quick reminder to tackle your daily DSA question. He
     server.sendmail(email,receiver_email,text)
     print("Email has been send to",receiver_email)
 
-dsa_questions = [
-    "https://leetcode.com/problems/two-sum/description/",
-    "https://leetcode.com/problems/maximum-average-subarray-i/",
-    "https://leetcode.com/problems/replace-elements-with-greatest-element-on-right-side/",
-    "https://leetcode.com/problems/to-lower-case/",
-    "https://leetcode.com/problems/arranging-coins/",
-    "https://leetcode.com/problems/shuffle-the-array/",
-    "https://leetcode.com/problems/find-n-unique-integers-sum-up-to-zero/",
-    "https://leetcode.com/problems/number-of-good-pairs/",
-    "https://leetcode.com/problems/decompress-run-length-encoded-list/",
-    "https://leetcode.com/problems/valid-parentheses/",
-    "https://leetcode.com/problems/single-number/",
-    "https://leetcode.com/problems/jewels-and-stones/",
-    "https://leetcode.com/problems/fizz-buzz/",
-    "https://leetcode.com/problems/robot-return-to-origin/",
-    "https://leetcode.com/problems/flipping-an-image/",
-    "https://leetcode.com/problems/sum-of-all-odd-length-subarrays/"
-]
+dsa_questions = fetch_collection_data('questions')
+dsa_questions = dsa_questions[0]["list"]
 
-def updateQusFirebase(question_link,id):
+def updateQusFirebase(question,id):
     try:
         # Get today's date
         today_date = datetime.today().strftime('%Y-%m-%d')
@@ -79,16 +63,37 @@ def updateQusFirebase(question_link,id):
         # Get the existing array of questions or initialize it if it doesn't exist
         questions_array = doc.get('questions') if doc.exists else []
 
+        obj = {
+            "date":today_date,
+            "category":question["category"],
+            "difficulty":question["difficulty"],
+            "link":question["link"]
+        }
+
         # Append the new question to the array
-        questions_array.append({'qus': question_link, 'date': today_date})
+        questions_array.append(obj)
 
         # Update the document with the new array
         doc_ref.set({'questions': questions_array})
     except Exception as e:
         print("Error updating Firestore:", e)
 
+def getRandomQuestion(category,difficulty):
+    result = []
+    if(category[0]=="All"):
+        for qus in dsa_questions:
+            if(qus["difficulty"]==difficulty):
+                    result.append(qus)
+    else:
+        for qus in dsa_questions:
+            if(qus["difficulty"]==difficulty):
+                    for cat in category:
+                        if(cat==qus["category"]):
+                            result.append(qus)
+    return result[random.randint(0, len(result) - 1)]
+
 for user in users:
     if (user["isSubscribed"]==True):
-        question_link = dsa_questions[random.randint(0, len(dsa_questions) - 1)]
-        updateQusFirebase(question_link,user["id"])
-        sendMailToUser(user["email"], user["name"], question_link)
+        question= getRandomQuestion(user["category"],user["difficulty"])
+        updateQusFirebase(question,user["id"])
+        sendMailToUser(user["email"], user["name"], question["link"])

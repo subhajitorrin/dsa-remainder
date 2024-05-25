@@ -21,4 +21,3 @@ function generateQuestion(category, difficulty) {
     result.shift();
     console.log(result);
 }
-generateQuestion("Array", "Easy");

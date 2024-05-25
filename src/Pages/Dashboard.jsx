@@ -10,6 +10,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { BarLoader, BeatLoader, RingLoader, ScaleLoader } from "react-spinners";
 import Loading from "./Loading";
+import data from "../data.json";
 
 const dsaCategories = [
   "All",
@@ -59,7 +60,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [disableDifficulties, setdisableDifficulties] = useState(false);
   const [toggleSubscribe, settoggleSubscribe] = useState(null);
   const [disableSubscribe, setDisableSubscribe] = useState(false);
-  const [searchText, setsearchText] = useState("")
+  const [searchText, setsearchText] = useState("");
 
   const toggleCategory = (category) => {
     setdisableCategories(true);
@@ -154,6 +155,21 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
       console.log(err);
     }
   }
+
+  // useEffect(() => {
+  //   async function getQus() {
+  //     const qusRef = doc(db, "questions", "TcxZ0CvO006nzYetWVKv");
+  //     const qusDoc = await getDoc(qusRef);
+  //     if (qusDoc.exists()) {
+  //       console.log(qusDoc.data());
+  //       const obj={
+  //         list:data
+  //       }
+  //       await updateDoc(qusRef, obj);
+  //     }
+  //   }
+  //   getQus();
+  // }, []);
 
   if (isLoading) {
     return <Loading />;
@@ -282,7 +298,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
               type="text"
               placeholder="Search for question..."
               className="outline-none pr-2 w-[300px]"
-              onChange={(e)=>setsearchText(e.target.value)}
+              onChange={(e) => setsearchText(e.target.value)}
             />
             <IoMdSearch className="text-[20px]" />
           </div>
@@ -290,11 +306,11 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         <div className="h-[88%] bg-transparent p-6 pt-0">
           <div className="h-[30px] w-full flex justify-between items-center py-5 font-[500] text-gray-500">
             <p className="w-[600px] text-center ">Question</p>
-            <p className="relative left-1">Category</p>
-            <p className="relative right-7">Difficulty</p>
+            <p className="relative left-4">Category</p>
+            <p className="relative left-5">Difficulty</p>
             <p className="relative right-8">Sended at</p>
           </div>
-          <QusList id={user.id} searchText={searchText}/>
+          <QusList id={user.id} searchText={searchText} />
         </div>
       </div>
     </div>

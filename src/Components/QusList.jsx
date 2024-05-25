@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QusCard from "./QusCard";
 import { db } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { RotateLoader } from "react-spinners";
 
 function QusList({ id, searchText }) {
@@ -12,11 +12,14 @@ function QusList({ id, searchText }) {
     async function fetchQuestions() {
       setisloadingQus(true);
       const qusRef = doc(db, "userQuestions", id);
-      const qusSnap = await getDoc(qusRef);
-      if (qusSnap.exists()) {
-        setlist(qusSnap.data().questions);
-      }
-      setisloadingQus(false);
+      onSnapshot(qusRef, (qusSnap) => {
+        if (qusSnap.exists()) {
+          setlist(qusSnap.data().questions);
+        } else {
+          setlist([]);
+        }
+        setisloadingQus(false);
+      });
     }
     fetchQuestions();
   }, []);
@@ -24,7 +27,7 @@ function QusList({ id, searchText }) {
   function getLeetCodeTitle(url) {
     // Split the URL by '/' and get the last part
     const parts = url.split("/");
-    const slug = parts[parts.length - 2];
+    const slug = parts[parts.length - 1];
 
     // Split the slug by '-' and capitalize each word
     const title = slug
@@ -38,10 +41,10 @@ function QusList({ id, searchText }) {
   useEffect(() => {
     if (list.length > 0) {
       const result = list.filter((item) => {
-        const qus = getLeetCodeTitle(item.qus).toLowerCase();
+        const qus = getLeetCodeTitle(item.link).toLowerCase();
         return qus.includes(searchText.toLowerCase());
       });
-      setfilteredList(result)
+      setfilteredList(result);
     }
   }, [searchText]);
 
@@ -65,7 +68,7 @@ function QusList({ id, searchText }) {
   return (
     <div className="h-full  overflow-x-auto quslistcontainer ">
       {list.map((item, index) => {
-        // console.log(item);
+        console.log(item);
         return <QusCard key={index} qus={item} />;
       })}
     </div>
