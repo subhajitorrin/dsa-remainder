@@ -59,6 +59,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [disableDifficulties, setdisableDifficulties] = useState(false);
   const [toggleSubscribe, settoggleSubscribe] = useState(null);
   const [disableSubscribe, setDisableSubscribe] = useState(false);
+  const [searchText, setsearchText] = useState("")
 
   const toggleCategory = (category) => {
     setdisableCategories(true);
@@ -281,6 +282,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
               type="text"
               placeholder="Search for question..."
               className="outline-none pr-2 w-[300px]"
+              onChange={(e)=>setsearchText(e.target.value)}
             />
             <IoMdSearch className="text-[20px]" />
           </div>
@@ -292,7 +294,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
             <p className="relative right-7">Difficulty</p>
             <p className="relative right-8">Sended at</p>
           </div>
-          <QusList id={user.id} />
+          <QusList id={user.id} searchText={searchText}/>
         </div>
       </div>
     </div>

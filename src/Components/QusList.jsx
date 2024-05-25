@@ -4,8 +4,9 @@ import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { RotateLoader } from "react-spinners";
 
-function QusList({ id }) {
+function QusList({ id, searchText }) {
   const [list, setlist] = useState([]);
+  const [filteredList, setfilteredList] = useState([]);
   const [isloadingQus, setisloadingQus] = useState(true);
   useEffect(() => {
     async function fetchQuestions() {
@@ -19,6 +20,31 @@ function QusList({ id }) {
     }
     fetchQuestions();
   }, []);
+
+  function getLeetCodeTitle(url) {
+    // Split the URL by '/' and get the last part
+    const parts = url.split("/");
+    const slug = parts[parts.length - 2];
+
+    // Split the slug by '-' and capitalize each word
+    const title = slug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+    return title;
+  }
+
+  useEffect(() => {
+    if (list.length > 0) {
+      const result = list.filter((item) => {
+        const qus = getLeetCodeTitle(item.qus).toLowerCase();
+        return qus.includes(searchText.toLowerCase());
+      });
+      setfilteredList(result)
+    }
+  }, [searchText]);
+
   if (isloadingQus) {
     return (
       <div className="h-full w-full flex items-center justify-center">
@@ -26,11 +52,21 @@ function QusList({ id }) {
       </div>
     );
   }
+  if (searchText != "") {
+    return (
+      <div className="h-full  overflow-x-auto quslistcontainer ">
+        {filteredList.map((item, index) => {
+          // console.log(item);
+          return <QusCard key={index} qus={item} />;
+        })}
+      </div>
+    );
+  }
   return (
     <div className="h-full  overflow-x-auto quslistcontainer ">
       {list.map((item, index) => {
-        console.log(item);
-        return <QusCard key={index} qus={item}/>;
+        // console.log(item);
+        return <QusCard key={index} qus={item} />;
       })}
     </div>
   );
