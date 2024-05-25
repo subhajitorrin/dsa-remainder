@@ -193,7 +193,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
               >
                 <input
                   type="checkbox"
-                  checked={selectedCategories.includes(category)}
+                  defaultChecked={selectedCategories.includes(category)}
                   className="hidden"
                 />
                 {category}
@@ -250,7 +250,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
             <p className="relative right-7">Difficulty</p>
             <p className="relative right-8">Sended at</p>
           </div>
-          <QusList />
+          <QusList id={user.id} />
         </div>
       </div>
     </div>
