@@ -58,6 +58,8 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         id: userCredential.user.uid,
         createdAt: new Date(),
         isSubscribed: true,
+        difficulty: "Easy",
+        category: ["All"],
       });
       signOut(auth);
       console.log("User registered and data saved");
@@ -100,7 +102,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       localStorage.setItem("email", user.email);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("uid", user.uid);
-      const userDetail =await getUserDetailsWithId(user.uid);
+      const userDetail = await getUserDetailsWithId(user.uid);
       if (!userDetail) {
         await setDoc(doc(db, "users", user.uid), {
           name: user.displayName,
@@ -108,6 +110,8 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
           id: user.uid,
           createdAt: new Date(),
           isSubscribed: true,
+          difficulty: "Easy",
+          category: ["All"],
         });
       }
       settriggerUserEffect((prev) => !prev);
