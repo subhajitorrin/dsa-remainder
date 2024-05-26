@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import UpdateCard from "../Components/UpdateCard";
 import axios from "axios";
 import { IoMenu } from "react-icons/io5";
 import QusList from "../Components/QusList";
@@ -39,6 +40,7 @@ const difficulties = ["Easy", "Medium", "Hard"];
 ChartJS.register(Tooltip, Legend, ArcElement);
 
 function Dashboard({ settriggerUserEffect, isLoggedIn }) {
+  const updateRef = useRef(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [cardListToggle, setCardListToggle] = useState(true);
@@ -57,6 +59,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [isLeetcodeLoading, setisLeetcodeLoading] = useState(true);
   const [completeLeetcodeData, setcompleteLeetcodeData] = useState(null);
   const [list, setlist] = useState([]);
+  const [toggleUpdateProfile, settoggleUpdateProfile] = useState(false);
   const [fakeChart, setFakeChart] = useState({
     labels: ["Easy", "Medium", "Hard"],
     datasets: [
@@ -301,12 +304,29 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   //   getQus();
   // }, []);
 
+  useEffect(() => {
+    const handleUpdateRefStyle = () => {
+      if (updateRef.current) {
+        updateRef.current.style.opacity = toggleUpdateProfile ? 1 : 0;
+        updateRef.current.style.pointerEvents = toggleUpdateProfile ? "auto" : "none";
+      }
+    };
+    handleUpdateRefStyle();
+  }, [toggleUpdateProfile]);
+  
+
   if (isLoading) {
     return <Loading />;
   }
 
   return (
     <div className="h-screen flex select-none">
+      {
+        <UpdateCard
+          settoggleUpdateProfile={settoggleUpdateProfile}
+          updateRef={updateRef}
+        />
+      }
       <div className="flex flex-col w-[30%] bg-white text-black">
         <div className="flex justify-between items-center px-6 h-[70px] ">
           <div className="flex gap-3 items-center">
@@ -337,7 +357,11 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
               onClick={() => setToggleMenu((prev) => !prev)}
             />
             {toggleMenu ? (
-              <UpdateProfile settriggerUserEffect={settriggerUserEffect} />
+              <UpdateProfile
+                settriggerUserEffect={settriggerUserEffect}
+                settoggleUpdateProfile={settoggleUpdateProfile}
+                setToggleMenu={setToggleMenu}
+              />
             ) : (
               ""
             )}
