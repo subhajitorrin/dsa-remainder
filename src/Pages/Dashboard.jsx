@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { IoMenu } from "react-icons/io5";
 import QusList from "../Components/QusList";
 import { IoMdSearch } from "react-icons/io";
@@ -8,7 +9,13 @@ import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { BarLoader, BeatLoader, RingLoader, ScaleLoader } from "react-spinners";
+import {
+  BarLoader,
+  BeatLoader,
+  RingLoader,
+  ScaleLoader,
+  SyncLoader,
+} from "react-spinners";
 import Loading from "./Loading";
 import data from "../data.json";
 
@@ -29,23 +36,6 @@ const dsaCategories = [
 
 const difficulties = ["Easy", "Medium", "Hard"];
 
-const fakeChart = {
-  labels: ["Array", "LinkedList", "Stack", "Queue", "Tree"],
-  datasets: [
-    {
-      data: [200, 100, 300, 100, 100],
-      backgroundColor: [
-        "rgba(255,99,132,0.9)",
-        "rgba(23, 212, 127, 0.9)",
-        "rgba(161, 65, 190, 0.9)",
-        "rgba(194, 140, 52, 0.9)",
-        "rgba(54,162,235,0.9)",
-      ],
-      hoverOffset: 4,
-    },
-  ],
-};
-
 ChartJS.register(Tooltip, Legend, ArcElement);
 
 function Dashboard({ settriggerUserEffect, isLoggedIn }) {
@@ -61,6 +51,20 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [toggleSubscribe, settoggleSubscribe] = useState(null);
   const [disableSubscribe, setDisableSubscribe] = useState(false);
   const [searchText, setsearchText] = useState("");
+  const [isLeetcode, setisLeetcode] = useState(null);
+  const [username, setUsername] = useState("");
+  const [leetcodeDataObj, setleetcodeDataObj] = useState({});
+  const [isLeetcodeLoading, setisLeetcodeLoading] = useState(true);
+  const [fakeChart, setFakeChart] = useState({
+    labels: ["Easy", "Medium", "Hard"],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: ["#A1A1A1", "#585858", "#262626"],
+        hoverOffset: 4,
+      },
+    ],
+  });
 
   const toggleCategory = (category) => {
     setdisableCategories(true);
@@ -126,15 +130,53 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
     }
   }
 
-  useEffect(() => {
-    if (user) {
-      setSelectedCategories(user.category);
-      setdisableCategories(false);
-      setSelectedDifficulty(user.difficulty);
-      setdisableDifficulties(false);
-      settoggleSubscribe(user.isSubscribed);
-      setDisableSubscribe(false);
+  async function getLeetcodeData(usern) {
+    console.log(usern);
+    const url = `https://leetcode-api-faisalshohag.vercel.app/${usern}`;
+    try {
+      const response = await axios.get(url);
+      const leetdata = response.data;
+      return leetdata;
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+  }
+
+  useEffect(() => {
+    async function rerenderUser() {
+      if (user) {
+        setSelectedCategories(user.category);
+        setdisableCategories(false);
+        setSelectedDifficulty(user.difficulty);
+        setdisableDifficulties(false);
+        settoggleSubscribe(user.isSubscribed);
+        setDisableSubscribe(false);
+        if (user.leetcodeUsername != "") {
+          const leetData = await getLeetcodeData(user.leetcodeUsername);
+          const obj = {
+            total: leetData.totalSolved,
+            easy: leetData.matchedUserStats.acSubmissionNum[1].count,
+            medium: leetData.matchedUserStats.acSubmissionNum[2].count,
+            hard: leetData.matchedUserStats.acSubmissionNum[3].count,
+          };
+          setleetcodeDataObj(obj);
+          setFakeChart((prev) => ({
+            ...prev,
+            datasets: [
+              {
+                ...prev.datasets[0],
+                data: [obj.easy, obj.medium, obj.hard],
+              },
+            ],
+          }));
+          setisLeetcode(user.isLeetcode);
+          setisLeetcodeLoading(false);
+        } else {
+          setisLeetcodeLoading(false);
+        }
+      }
+    }
+    rerenderUser();
   }, [user]);
 
   async function handelSubscribe() {
@@ -150,6 +192,27 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         };
         await updateDoc(userRef, updatedUserData);
         settriggerUserDataFetch((prev) => !prev);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handelLeetcodeRegister() {
+    try {
+      if (username.trim() != "") {
+        const userRef = doc(db, "users", user.id);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const currentUserData = userDoc.data();
+          const updatedUserData = {
+            ...currentUserData,
+            isLeetcode: true,
+            leetcodeUsername: username,
+          };
+          await updateDoc(userRef, updatedUserData);
+          settriggerUserDataFetch((prev) => !prev);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -213,18 +276,44 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
             )}
           </div>
         </div>
-        <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px]">
-          <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">
-            Total
-            <br />
-            60
-          </p>
-          <Doughnut
-            options={{}}
-            data={fakeChart}
-            className="h-[100px] w-full"
-          />
-        </div>
+        {isLeetcodeLoading ? (
+          <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px] flex-col gap-5">
+            <SyncLoader color="#949b99" margin={5} size={12} />
+          </div>
+        ) : !isLeetcode ? (
+          <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px] flex-col gap-5">
+            <input
+              type="text"
+              placeholder="Enter your leetcode username..."
+              className="w-[50%] border border-black outline-none rounded-md px-3 py-1"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+            />
+            <button
+              className="w-[150px] rounded-md px-4 py-1 border border-black bg-black text-white"
+              onClick={handelLeetcodeRegister}
+            >
+              Register
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px] flex-col">
+            <h2 className="text-lg font-semibold mb-2">Leetcode Data <span className="text-neutral-600">{user.leetcodeUsername}</span></h2>
+              <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">
+                Total
+                <br />
+                {leetcodeDataObj.total}
+              </p>
+              <Doughnut
+                options={{}}
+                data={fakeChart}
+                className="h-[100px] w-full"
+              />
+            </div>
+          </>
+        )}
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-2">
             Choose Question Categories

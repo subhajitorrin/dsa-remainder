@@ -58,6 +58,8 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         id: userCredential.user.uid,
         createdAt: new Date(),
         isSubscribed: true,
+        isLeetcode: false,
+        leetcodeUsername: "",
         difficulty: "Easy",
         category: ["All"],
       });
@@ -110,6 +112,8 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
           id: user.uid,
           createdAt: new Date(),
           isSubscribed: true,
+          isLeetcode: false,
+          leetcodeUsername: "",
           difficulty: "Easy",
           category: ["All"],
         });
