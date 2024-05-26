@@ -4,8 +4,7 @@ import { db } from "../firebase/firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { RotateLoader } from "react-spinners";
 
-function QusList({ id, searchText }) {
-  const [list, setlist] = useState([]);
+function QusList({ id, searchText, list, setlist }) {
   const [filteredList, setfilteredList] = useState([]);
   const [isloadingQus, setisloadingQus] = useState(true);
   useEffect(() => {
@@ -68,7 +67,7 @@ function QusList({ id, searchText }) {
   return (
     <div className="h-full  overflow-x-auto quslistcontainer ">
       {list.map((item, index) => {
-        console.log(item);
+        // console.log(item);
         return <QusCard key={index} qus={item} />;
       })}
     </div>

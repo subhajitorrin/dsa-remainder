@@ -1,6 +1,7 @@
 import React from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { GiConfirmed } from "react-icons/gi";
+import { RxCheckCircled } from "react-icons/rx";
+import { CiNoWaitingSign } from "react-icons/ci";
 
 function QusCard({ qus }) {
   function getLeetCodeTitle(url) {
@@ -20,8 +21,16 @@ function QusCard({ qus }) {
   return (
     <div className=" mb-5 w-full h-[60px] rounded-[10px] flex items-center justify-between px-5 bg-opacity-6 shadow-lg backdrop-filter backdrop-blur-sm border border-black border-opacity-20 transition-all duration-100 ease-linear hover:shadow-2xl">
       <div className="flex gap-3 items-center w-[600px] ">
-        <GiConfirmed className="text-green-500 text-[25px]" />
-        <h1 className="text-[20px] font-[500] ">{getLeetCodeTitle(qus.link)}</h1>
+        {qus.isSubmitted ? (
+          <RxCheckCircled className="text-green-500 text-[25px]" />
+        ) : (
+          <CiNoWaitingSign className="text-red-600 text-[25px] font-extrabold" />
+        )}
+        <h1 className="text-[20px] font-[500] ">
+          {getLeetCodeTitle(qus.link).length > 50
+            ? `${getLeetCodeTitle(qus.link).slice(0, 50)}...`
+            : getLeetCodeTitle(qus.link)}
+        </h1>
         <FaExternalLinkAlt
           className="cursor-pointer"
           onClick={() => window.open(qus.link, "_blank")}

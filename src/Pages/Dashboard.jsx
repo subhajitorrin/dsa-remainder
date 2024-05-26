@@ -7,7 +7,7 @@ import UpdateProfile from "../Components/UpdateProfile";
 import { Pie, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import {
   BarLoader,
@@ -55,6 +55,8 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [username, setUsername] = useState("");
   const [leetcodeDataObj, setleetcodeDataObj] = useState({});
   const [isLeetcodeLoading, setisLeetcodeLoading] = useState(true);
+  const [completeLeetcodeData, setcompleteLeetcodeData] = useState(null);
+  const [list, setlist] = useState([]);
   const [fakeChart, setFakeChart] = useState({
     labels: ["Easy", "Medium", "Hard"],
     datasets: [
@@ -97,7 +99,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         const useruid = localStorage.getItem("uid");
         const userData = await getUserDetailsWithId(useruid);
         setUser(userData);
-        console.log(userData);
+        // console.log(userData);
         setisLoading(false);
       }
     }
@@ -131,7 +133,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   }
 
   async function getLeetcodeData(usern) {
-    console.log(usern);
+    // console.log(usern);
     const url = `https://leetcode-api-faisalshohag.vercel.app/${usern}`;
     try {
       const response = await axios.get(url);
@@ -153,6 +155,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         setDisableSubscribe(false);
         if (user.leetcodeUsername != "") {
           const leetData = await getLeetcodeData(user.leetcodeUsername);
+          setcompleteLeetcodeData(leetData.recentSubmissions);
           const obj = {
             total: leetData.totalSolved,
             easy: leetData.matchedUserStats.acSubmissionNum[1].count,
@@ -218,6 +221,70 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
       console.log(err);
     }
   }
+
+  function getTitleSlug(url) {
+    const parts = url.split("/");
+    const slug = parts[parts.length - 1];
+    return slug;
+  }
+
+  function timestampToDate(timestamp) {
+    const date = new Date(timestamp * 1000);
+    // Format the date as YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  async function fetchQuestions() {
+    try {
+      const qusRef = doc(db, "userQuestions", user.id);
+      const qusSnap = await getDoc(qusRef);
+      if (qusSnap.exists()) {
+        return qusSnap.data().questions;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    async function getQusProgress() {
+      if (completeLeetcodeData && list.length > 0) {
+        let onLeetcodeProfileList = [];
+        let onFirebaseSendedList = await fetchQuestions();
+        completeLeetcodeData.forEach((item) => {
+          if (item.statusDisplay == "Accepted") {
+            const date = timestampToDate(item.timestamp);
+            const obj = {
+              slug: item.titleSlug,
+              date: date,
+            };
+            onLeetcodeProfileList.push(obj);
+          }
+        });
+        onFirebaseSendedList = onFirebaseSendedList.map((item) => {
+          const slug = getTitleSlug(item.link);
+          const match = onLeetcodeProfileList.find(
+            (leetcodeItem) =>
+              leetcodeItem.slug === slug && leetcodeItem.date === item.date
+          );
+          if (match) {
+            return { ...item, isSubmitted: true };
+          } else {
+            return item;
+          }
+        });
+        const qusRef = doc(db, "userQuestions", user.id);
+        const obj = {
+          questions: onFirebaseSendedList,
+        };
+        await updateDoc(qusRef, obj);
+      }
+    }
+    getQusProgress();
+  }, [completeLeetcodeData, list]);
 
   // useEffect(() => {
   //   async function getQus() {
@@ -300,7 +367,12 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         ) : (
           <>
             <div className="relative mx-6  h-[40%] flex items-center justify-center mt-[60px] mb-[60px] flex-col">
-            <h2 className="text-lg font-semibold mb-2">Leetcode Data <span className="text-neutral-600">{user.leetcodeUsername}</span></h2>
+              <h2 className="text-lg font-semibold mb-2">
+                Leetcode Data{" "}
+                <span className="text-neutral-600">
+                  {user.leetcodeUsername}
+                </span>
+              </h2>
               <p className="absolute top-[50%] text-[25px] font-bold leading-6 text-center">
                 Total
                 <br />
@@ -399,7 +471,12 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
             <p className="relative left-5">Difficulty</p>
             <p className="relative right-8">Sended at</p>
           </div>
-          <QusList id={user.id} searchText={searchText} />
+          <QusList
+            id={user.id}
+            searchText={searchText}
+            list={list}
+            setlist={setlist}
+          />
         </div>
       </div>
     </div>

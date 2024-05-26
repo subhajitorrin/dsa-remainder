@@ -67,7 +67,8 @@ def updateQusFirebase(question,id):
             "date":today_date,
             "category":question["category"],
             "difficulty":question["difficulty"],
-            "link":question["link"]
+            "link":question["link"],
+            "isSubmitted":question["isSubmitted"]
         }
 
         # Append the new question to the array
@@ -95,5 +96,9 @@ def getRandomQuestion(category,difficulty):
 for user in users:
     if (user["isSubscribed"]==True):
         question= getRandomQuestion(user["category"],user["difficulty"])
+        question = {
+            **question,
+            "isSubmitted":False
+        }
         updateQusFirebase(question,user["id"])
-        sendMailToUser(user["email"], user["name"], question["link"])
+        # sendMailToUser(user["email"], user["name"], question["link"])
