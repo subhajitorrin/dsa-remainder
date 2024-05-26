@@ -8,6 +8,7 @@ import Loading from "./Pages/Loading";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [triggerUserEffect, settriggerUserEffect] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
   useEffect(() => {
     // Fetch the login status from local storage
     const loggedInStatus = localStorage.getItem("isLoggedIn");
@@ -16,11 +17,14 @@ function App() {
     } else {
       setIsLoggedIn(false);
     }
+    setisLoading(false);
   }, [triggerUserEffect]);
 
   return (
     <>
-      {isLoggedIn ? (
+      {isLoading ? (
+        <Loading />
+      ) : isLoggedIn ? (
         <Dashboard
           settriggerUserEffect={settriggerUserEffect}
           isLoggedIn={isLoggedIn}

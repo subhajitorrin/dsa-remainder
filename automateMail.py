@@ -39,8 +39,19 @@ def sendMailToUser(receiver_email,recipientName,qusLink):
     email = "zummsg@gmail.com"
     subject= "Daily DSA Reminder: Time for Your Daily Question!"
     message = f"""
-Hi {recipientName},\nJust a quick reminder to tackle your daily DSA question. Here's today's problem:\n{qusLink}\nConsistency is key! Keep up the great work.\nRegards,\nORRIN"""
-    
+Subject: Daily DSA Question Reminder
+
+Hi {recipientName},
+
+Just a quick reminder to tackle your daily DSA question. Here's today's problem:
+
+{qusLink}
+
+Consistency is key! Keep up the great work.
+
+Regards,  
+ORRIN
+"""
     text = f"Subject: {subject}\n\n{message}"
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.starttls()
@@ -101,4 +112,4 @@ for user in users:
             "isSubmitted":False
         }
         updateQusFirebase(question,user["id"])
-        # sendMailToUser(user["email"], user["name"], question["link"])
+        sendMailToUser(user["email"], user["name"], question["link"])

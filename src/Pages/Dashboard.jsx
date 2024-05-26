@@ -153,7 +153,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         setdisableDifficulties(false);
         settoggleSubscribe(user.isSubscribed);
         setDisableSubscribe(false);
-        if (user.leetcodeUsername != "") {
+        if (user.leetcodeUsername != "" && user.isLeetcode) {
           const leetData = await getLeetcodeData(user.leetcodeUsername);
           setcompleteLeetcodeData(leetData.recentSubmissions);
           const obj = {
