@@ -54,6 +54,15 @@ function QusList({ id, searchText, list, setlist }) {
       </div>
     );
   }
+
+  if (!list.length > 0 || !filteredList.length > 0) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        Question list is empty
+      </div>
+    );
+  }
+
   if (searchText != "") {
     return (
       <div className="h-full  overflow-x-auto quslistcontainer ">

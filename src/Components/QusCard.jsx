@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { RxCheckCircled } from "react-icons/rx";
 import { CiNoWaitingSign } from "react-icons/ci";

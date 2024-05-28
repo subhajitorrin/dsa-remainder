@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import { toast } from "react-toastify";
 
 function UpdateProfile({
   settriggerUserEffect,
@@ -11,6 +12,7 @@ function UpdateProfile({
     localStorage.removeItem("email");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("uid");
+    toast.success("Logout Successful");
     settriggerUserEffect((prev) => !prev);
   }
   function handelUpdateProfile() {

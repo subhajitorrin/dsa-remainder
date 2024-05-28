@@ -14,6 +14,7 @@ import {
 } from "firebase/auth";
 import { FaGoogle } from "react-icons/fa";
 import getUserDetailsWithId from "../firebase/getUserDetailsWithID";
+import { Bounce, toast } from "react-toastify";
 
 function RegLog({ logrefsection, settriggerUserEffect }) {
   const [toggle, setToggle] = useState(false);
@@ -50,6 +51,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         handleCodeInApp: true,
       });
       console.log("Verification email sent");
+      toast.success("Verification email sent")
 
       // Save user data in Firestore
       await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -66,7 +68,12 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       signOut(auth);
       console.log("User registered and data saved");
     } catch (err) {
-      console.error("Error during registration:", err);
+      console.log("Error during registration:", err.message);
+      if(err.message=="Firebase: Error (auth/email-already-in-use)."){
+        toast.error("Email already exist !")
+      }else if(err.message=="Firebase: Password should be at least 6 characters (auth/weak-password)."){
+        toast.error("Password should be at least 6 characters !")
+      }
     }
   }
 
@@ -89,11 +96,14 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         localStorage.setItem("uid", user.uid);
         settriggerUserEffect((prev) => !prev);
         console.log("Login succesfull");
+        toast.success("Login succesfull");
       } else {
         console.log("Email is not verified");
+        toast.warn("Email is not verified!");
       }
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
+      toast.error("Invalid credential!");
     }
   }
 
@@ -120,6 +130,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       }
       settriggerUserEffect((prev) => !prev);
       console.log("Login succesfull");
+      toast.success("Login succesfull");
     } catch (err) {
       console.log(err);
     }

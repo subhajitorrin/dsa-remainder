@@ -19,6 +19,7 @@ import {
 } from "react-spinners";
 import Loading from "./Loading";
 import data from "../data.json";
+import { toast } from "react-toastify";
 
 const dsaCategories = [
   "All",
@@ -197,6 +198,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
           isSubscribed: !currentUserData.isSubscribed,
         };
         await updateDoc(userRef, updatedUserData);
+        !currentUserData.isSubscribed ? toast.success("Subscribed to email remainder") : toast.warn("Unsubscribed to email remainder")
         settriggerUserDataFetch((prev) => !prev);
       }
     } catch (err) {
@@ -207,6 +209,8 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   async function handelLeetcodeRegister() {
     try {
       if (username.trim() != "") {
+        const leetData = await getLeetcodeData(username);
+        if (!leetData.recentSubmissions) throw "";
         const userRef = doc(db, "users", user.id);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
@@ -218,10 +222,11 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
           };
           await updateDoc(userRef, updatedUserData);
           settriggerUserDataFetch((prev) => !prev);
+          toast.success("Leetcode username updated");
         }
       }
     } catch (err) {
-      console.log(err);
+      toast.success("Invalid leetcode username !");
     }
   }
 
@@ -270,8 +275,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         onFirebaseSendedList = onFirebaseSendedList.map((item) => {
           const slug = getTitleSlug(item.link);
           const match = onLeetcodeProfileList.find(
-            (leetcodeItem) =>
-              leetcodeItem.slug === slug && leetcodeItem.date === item.date
+            (leetcodeItem) => leetcodeItem.slug === slug
           );
           if (match) {
             return { ...item, isSubmitted: true };
@@ -308,12 +312,13 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
     const handleUpdateRefStyle = () => {
       if (updateRef.current) {
         updateRef.current.style.opacity = toggleUpdateProfile ? 1 : 0;
-        updateRef.current.style.pointerEvents = toggleUpdateProfile ? "auto" : "none";
+        updateRef.current.style.pointerEvents = toggleUpdateProfile
+          ? "auto"
+          : "none";
       }
     };
     handleUpdateRefStyle();
   }, [toggleUpdateProfile]);
-  
 
   if (isLoading) {
     return <Loading />;
@@ -325,6 +330,8 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         <UpdateCard
           settoggleUpdateProfile={settoggleUpdateProfile}
           updateRef={updateRef}
+          user={user}
+          settriggerUserDataFetch={settriggerUserDataFetch}
         />
       }
       <div className="flex flex-col w-[30%] bg-white text-black">

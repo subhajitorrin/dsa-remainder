@@ -9,6 +9,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [triggerUserEffect, settriggerUserEffect] = useState(false);
   const [isLoading, setisLoading] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
+
   useEffect(() => {
     // Fetch the login status from local storage
     const loggedInStatus = localStorage.getItem("isLoggedIn");
@@ -19,6 +21,23 @@ function App() {
     }
     setisLoading(false);
   }, [triggerUserEffect]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 1000);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (isMobileView) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center text-[30px]">
+        Please open on desktop...
+      </div>
+    );
+  }
 
   return (
     <>
