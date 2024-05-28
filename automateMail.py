@@ -36,7 +36,7 @@ def fetch_collection_data(collection_name):
 users = fetch_collection_data('users')
 
 def sendMailToUser(receiver_email,recipientName,qusLink):
-    email = "zummsg@gmail.com"
+    email = "dsaremainderorrin@gmail.com"
     subject= "Daily DSA Reminder: Time for Your Daily Question!"
     message = f"""
 Subject: Daily DSA Question Reminder
@@ -55,7 +55,7 @@ ORRIN
     text = f"Subject: {subject}\n\n{message}"
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.starttls()
-    server.login(email,"xjibxrvjzckrwoue")
+    server.login(email,"hxrjbbhqozcfnybw")
     server.sendmail(email,receiver_email,text)
     print("Email has been send to",receiver_email)
 
