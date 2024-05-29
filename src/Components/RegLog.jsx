@@ -20,6 +20,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
   const [toggle, setToggle] = useState(false);
   const scrollRefx = useRef(null);
   const { setScrollRef } = useContext(ScrollContext);
+  const [isLoading, setisLoading] = useState(false);
 
   function handleToggle() {
     setToggle((prev) => !prev);
@@ -30,6 +31,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
   }, []);
 
   async function handleRegister(e) {
+    setisLoading(true);
     e.preventDefault();
     const data = {
       name: e.target[0].value.trim(),
@@ -51,7 +53,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
         handleCodeInApp: true,
       });
       console.log("Verification email sent");
-      toast.success("Verification email sent")
+      toast.success("Verification email sent");
 
       // Save user data in Firestore
       await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -69,15 +71,21 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       console.log("User registered and data saved");
     } catch (err) {
       console.log("Error during registration:", err.message);
-      if(err.message=="Firebase: Error (auth/email-already-in-use)."){
-        toast.error("Email already exist !")
-      }else if(err.message=="Firebase: Password should be at least 6 characters (auth/weak-password)."){
-        toast.error("Password should be at least 6 characters !")
+      if (err.message == "Firebase: Error (auth/email-already-in-use).") {
+        toast.error("Email already exist !");
+      } else if (
+        err.message ==
+        "Firebase: Password should be at least 6 characters (auth/weak-password)."
+      ) {
+        toast.error("Password should be at least 6 characters !");
       }
+    } finally {
+      setisLoading(false);
     }
   }
 
   async function handelLogin(e) {
+    setisLoading(true);
     e.preventDefault();
     const data = {
       email: e.target[0].value.trim(),
@@ -104,11 +112,14 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
     } catch (err) {
       console.log(err.message);
       toast.error("Invalid credential!");
+    } finally {
+      setisLoading(false);
     }
   }
 
   async function handelSignInWithGoodle() {
     try {
+      setisLoading(true);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       localStorage.setItem("email", user.email);
@@ -133,6 +144,8 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       toast.success("Login succesfull");
     } catch (err) {
       console.log(err);
+    } finally {
+      setisLoading(false);
     }
   }
 
@@ -158,7 +171,12 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
             <input type="text" placeholder="Name" />
             <input type="email" placeholder="Email" />
             <input type="password" placeholder="Password" />
-            <button type="submit">Sign Up</button>
+            <button
+              type="submit"
+              className={`${isLoading ? "pointer-events-none" : ""} w-full`}
+            >
+              {isLoading ? "..." : "Sign Up"}
+            </button>
           </form>
         </div>
         <div className="form-container sign-in">
@@ -177,7 +195,13 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
             <input type="email" placeholder="Email" />
             <input type="password" placeholder="Password" />
             <span>Forget Your Password?</span>
-            <button type="submit">Sign In</button>
+            <button
+              type="submit"
+              className={`${isLoading ? "pointer-events-none" : ""} w-full`}
+            >
+              {" "}
+              {isLoading ? "..." : "Sign In"}
+            </button>
           </form>
         </div>
         <div className="toggle-container">
