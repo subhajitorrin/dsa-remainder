@@ -48,10 +48,7 @@ function RegLog({ logrefsection, settriggerUserEffect }) {
       );
 
       // Send email verification
-      await sendEmailVerification(userCredential.user, {
-        url: "https://dsa-remainder-orrin.netlify.app/",
-        handleCodeInApp: true,
-      });
+      await sendEmailVerification(userCredential.user);
       console.log("Verification email sent");
       toast.success("Verification email sent");
 
