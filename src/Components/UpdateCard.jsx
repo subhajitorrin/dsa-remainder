@@ -4,6 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import { db } from "../firebase/firebase";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { BeatLoader } from "react-spinners";
 
 function UpdateCard({
   settoggleUpdateProfile,
@@ -109,7 +110,7 @@ function UpdateCard({
             }`}
             onClick={handelProfileName}
           >
-            {isLoading ? "..." : "Update"}
+            {isLoading ? <BeatLoader color="#949b99" size={3} /> : "Update"}
           </button>
         </div>
         <div className="">
@@ -128,7 +129,7 @@ function UpdateCard({
             }`}
             onClick={handelUsername}
           >
-            {isLoading ? "..." : "Update"}
+            {isLoading ? <BeatLoader color="#949b99" size={3} /> : "Update"}
           </button>
         </div>
       </div>

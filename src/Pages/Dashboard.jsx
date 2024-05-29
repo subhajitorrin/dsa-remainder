@@ -61,6 +61,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
   const [completeLeetcodeData, setcompleteLeetcodeData] = useState(null);
   const [list, setlist] = useState([]);
   const [toggleUpdateProfile, settoggleUpdateProfile] = useState(false);
+  const [isloadingLeetRegister, setisloadingLeetRegister] = useState(false);
   const [fakeChart, setFakeChart] = useState({
     labels: ["Easy", "Medium", "Hard"],
     datasets: [
@@ -198,7 +199,9 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
           isSubscribed: !currentUserData.isSubscribed,
         };
         await updateDoc(userRef, updatedUserData);
-        !currentUserData.isSubscribed ? toast.success("Subscribed to email remainder") : toast.warn("Unsubscribed to email remainder")
+        !currentUserData.isSubscribed
+          ? toast.success("Subscribed to email remainder")
+          : toast.warn("Unsubscribed to email remainder");
         settriggerUserDataFetch((prev) => !prev);
       }
     } catch (err) {
@@ -208,6 +211,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
 
   async function handelLeetcodeRegister() {
     try {
+      setisloadingLeetRegister(true);
       if (username.trim() != "") {
         const leetData = await getLeetcodeData(username);
         if (!leetData.recentSubmissions) throw "";
@@ -227,6 +231,8 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
       }
     } catch (err) {
       toast.success("Invalid leetcode username !");
+    } finally {
+      setisloadingLeetRegister(false);
     }
   }
 
@@ -338,7 +344,7 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
         <div className="flex justify-between items-center px-6 h-[70px] ">
           <div className="flex gap-3 items-center">
             <h1 className="text-2xl font-bold spacemono border-b">
-              {user && user.name}
+              {user && user.name.slice(0, 20)}
             </h1>
             <button
               className={`w-[150px] ${
@@ -392,7 +398,11 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
               className="w-[150px] rounded-md px-4 py-1 border border-black bg-black text-white"
               onClick={handelLeetcodeRegister}
             >
-              Register
+              {isloadingLeetRegister ? (
+                <BeatLoader color="#949b99" size={3} />
+              ) : (
+                "Register"
+              )}
             </button>
           </div>
         ) : (
@@ -484,7 +494,12 @@ function Dashboard({ settriggerUserEffect, isLoggedIn }) {
       </div>
       <div className="w-[70%] bg-white text-black border-l">
         <div className="h-[10%] bg-transparent flex items-center px-6 justify-between border-b">
-          <h1 className="text-[40px] font-bold spacemono">Dashboard</h1>
+          <div className="flex flex-col">
+            <h1 className="text-[40px] font-bold spacemono ">Dashboard</h1>
+            <div className="relative top-[-7px]">
+              Question will be sended after 12:00 AM everyday
+            </div>
+          </div>
           <div className="flex items-center border border-black border-opacity-20 p-2 rounded-2xl px-5 ">
             <input
               type="text"
